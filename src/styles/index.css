@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add these styles to your existing stylesheet or create a new one */
+
+#BoardPageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #gameBoard {
+    display: grid;
+    grid-template-columns: repeat(10, 150px);
+    grid-template-rows: repeat(10, 50px);
+    gap: 0px; 
+  }
+  
+  #gameBoard div {
+    width: 150px; 
+    height: 50px; 
+    background-color: white;
+    border: 1px solid #D1D5DB; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white; 
+    padding: 2px;
+  }
+  
+  #ButtonHolder {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  #gameBoard div.SELECTED {
+    border: 2px solid black;
+  }
+
+  /* Add styles for the occupied squares if needed */
+  .boardSquareOccupiedString {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        background-color: rgb(45 212 191);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        font-weight: bold;
+        align-items: center;
+        text-align: center;
+        border-radius: 0.5rem;
+        text-transform: uppercase;
+        justify-content: space-around;
+    } /* Change the color for occupied squares */
+  
+  
