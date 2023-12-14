@@ -16,7 +16,7 @@
     grid-template-rows: repeat(10, 50px);
     gap: 0px; 
   }
-  
+    
   #gameBoard div {
     width: 150px; 
     height: 50px; 
@@ -36,6 +36,10 @@
 
   #gameBoard div.SELECTED {
     border: 2px solid black;
+  }
+
+  #tileholder div div div.SELECTEDTILE {
+    border: 2px dotted black;
   }
 
   /* Add styles for the occupied squares if needed */

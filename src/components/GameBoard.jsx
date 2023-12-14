@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 class GameBoard extends React.Component {
-    // Your existing GameBoard component code goes here
+    
 
-    /* <div id="boardSquare1-4" role="text" tabindex="-1" aria-label="1 4: they" data-pos-x="3" data-pos-y="0" data-occupied="true">
-    <span class="boardSquareOccupiedString selected">they</span></div>*/
   
     render() {
       const { board, setSelectedSquare, handleSelect } = this.props; 
