@@ -24,18 +24,9 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route
             path="/"
-            element={isAuthenticated ? <MagnetBoard /> : <h3>Please login :)</h3>}
+            element={ <MagnetBoard /> }
           />
-          <Route
-            path="/edit"
-            element={
-              isAuthenticated ? (
-                <MagnetBoard isEditing={true} />
-              ) : (
-                <h3>Please login :)</h3>
-              )
-            }
-          />
+       
         </Routes>
       
       </Router>

@@ -1,10 +1,10 @@
-import React, { Component, Row } from "react";
-class Buttons extends Component {
-    render() {
+import React, { useState } from 'react';
+import { Row, Form } from 'react-bootstrap'; 
 
-        const { board, moveSelectedTileToSquare, setPoemTitle, toggleTitleDiv, savePoemToDB, title, clearSelectedSquare, resetBoard } = this.props;
+const Buttons = ({ board, moveSelectedTileToSquare, setTitle, setPoemTitle, toggleTitleDiv, savePoemToDB, title, clearSelectedSquare, resetBoard }) => {
+  const [isDisplayed, setIsDisplayed] = useState(false);
 
-        return (
+  return (
 
 <div id="ButtonHolder" aria-label="Button Holding Container">
    <Row> <button
@@ -26,7 +26,7 @@ class Buttons extends Component {
     className="middle none center mr-3 rounded-lg bg-indigo-500 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-indigo-500/20 transition-all hover:shadow-lg hover:shadow-indigo-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
     data-ripple-light="true"
     aria-label="Save Poem"
-    onClick={(e) => {{console.log(board)};{ toggleTitleDiv(e)}}}
+    onClick={() => {console.log(board); setIsDisplayed(true)}}
     
   >Save Poem</button>
 
@@ -43,13 +43,16 @@ class Buttons extends Component {
 
 </Row>
  <Row>
-  <div id="titlediv" style={{ display: isDisplayed ? 'flex' : 'none' }}> 
+  <div id="titlediv" style={{ display: isDisplayed ? 'flex' : 'none' }}>
 
     <h4 className="text-med font-semibold mb-2 text-indigo-400">Write a title for your poem.</h4>
                     <Form>
-                    <input onChange={(e) => setPoemTitle({title: e.target.value})} value={themetitle.title} type="text" name="title" id="title" class="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Example: Best Magnet Poem Ever Part One"/>
-                    <button class="px-8 rounded-r-lg bg-indigo-400  text-gray-800 font-bold p-4 uppercase border-indigo-500 border-t border-b border-r" type='submit' value="submit" onSubmit={savePoemToDB(board, title)}>Confirm Save Poem</button>
-                    </Form>
+                    <input onChange={(e) => setPoemTitle(e)} type="text" name="title" id="title" className="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Example: Best Magnet Poem Ever Part One"/>
+                    <button className="px-8 rounded-r-lg bg-indigo-400  text-gray-800 font-bold p-4 uppercase border-indigo-500 border-t border-b border-r" type="button"  onClick={() => {
+                savePoemToDB(board, title);
+                setIsDisplayed(false);
+              }}>Confirm Save Poem</button></Form>
+                    
 
   </div>
   </Row>
@@ -57,5 +60,5 @@ class Buttons extends Component {
    
         )
 }
-}
+
 export default Buttons;

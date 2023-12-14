@@ -1,35 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-import { useNavigate } from "react-router-dom";
 import PgThemes from "./pgThemes";
 import GameBoard from "./GameBoard"
 import Buttons from './Buttons';
-import userThemeBox from "./userThemeBox";
+//import UserThemeBox from "./UserThemeBox.jsx";
 import axios from "axios";
 
 
 
 const SERVER= import.meta.env.VITE_SERVER;
 
-const MagnetBoard = ({ location }) => {
- /* constructor() {
-    super();
-    // Initialize the game board with an array of rows and columns
-    this.state = {
-      board: Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => ({ value: "", occupied: false }))),
-      selectedTileData: '',
-      selectedSquareData: '',
-      selectedTile: '',
-      selectedSquare: '',
-      isDisplayed: false,
-      title: ''
-      
-    };
-    
-  } */
-
-  const navigate = useNavigate();
-  const [board, setBoard] = useState(Array.from({ length: 8 }, () => Array.from({ length: 5 }, () => ({ value: "", occupied: false }))));
+const MagnetBoard = () => {
+  const [board, setBoard] = useState(Array.from({ length: 5 }, () => Array.from({ length: 8 }, () => ({ value: "", occupied: false }))));
   const [selectedTile, setSelectedTile] = useState('');
   const [selectedSquare, setSelectedSquare] = useState('');
   const [isDisplayed, setIsDisplayed] = useState(false);
@@ -37,25 +19,7 @@ const MagnetBoard = ({ location }) => {
   const [selectedTileData, setSelectedTileData] = useState('');
   const [selectedSquareData, setSelectedSquareData] = useState('');
 
-  const { getIdTokenClaims } = useAuth0();
-
-  useEffect(() => {
-    handlePropsAndLocation();
-  }, [location]);
-
-  const handlePropsAndLocation = () => {
-    const { state: { isEditing, poemData } = {} } = location;
-
-    if (isEditing) {
-      // Handle the poem data as needed (e.g., update internal state)
-      console.log('Editing poem:', poemData);
-
-      // Example: Set the board state with the poemData (you may need to adjust this based on your data structure)
-      setBoard(poemData ? poemData.board : board);
-      setTitle(poemData ? poemData.title : title);
-    }
-  };
-
+  const { getIdTokenClaims, isAuthenticated } = useAuth0();
 
 
 //<------------------- HANDLE USER UI FUNCTIONS ------------------->
@@ -69,7 +33,7 @@ const selectTileFunction = (index, value) => {
     setSelectedTile(tileIndex);
     setSelectedTileData(tileData);
  
-    console.log('Selected Tile', selectedTile, selectedTileData);
+    
 }
 
 //Select square on the board
@@ -81,21 +45,28 @@ const squarevalue = value;
 
 setSelectedSquare(square);
 setSelectedSquareData(squarevalue);
-console.log('Selected Square', selectedSquare, selectedSquareData);
+
 
 }
+
+useEffect(() => {
+  console.log('Selected Tile', selectedTile, selectedTileData);
+}, [selectedTile, selectedTileData]);
+useEffect(() => {
+  console.log('Selected Square', selectedSquare, selectedSquareData);
+}, [selectedSquare, selectedSquareData]);
 
 //Show selected square through CSS
 const handleSelect = (e) => {
 
-  const selectedthing = e.target;
+  const selectedthing = e.target.tagName.toLowerCase() === 'div' ? e.target : e.target.parentElement;
 
   for (let childelement of selectedthing.parentElement.children) {
     childelement.classList.remove('SELECTED');
   }
 
   selectedthing.classList.add('SELECTED');
-  //console.log(selectedthing.parentElement);
+  console.log(selectedthing.parentElement);
 
   
 }
@@ -118,18 +89,19 @@ const handleTileSelect = (e) => {
 
 //Move string from tile to board function
 const moveSelectedTileToSquare = () => {
-  const { selectedTile, selectedTileData, selectedSquare } = this.state;
+  
 
-  /*if (selectedTile !== '' && selectedSquare !== '') {
+  if (selectedTile !== '' && selectedSquare !== '') {
     const { row, col } = selectedSquare;
     const tileValue = selectedTileData;
 
     // Check if the selected square is empty
     if (!board[row][col].occupied) {
-      const availableSpace = 80 - col; // Calculate available space in the row
+      const availableSpace = 10 * (5 - col);
+
 
       // Check if the tile value can fit in the available space
-      // square grid const wordsArray = sentence.split(/\s+/); split by word, maybe later
+     
       if (tileValue.length <= availableSpace) {
         const updatedBoard = [...board];
 
@@ -139,61 +111,34 @@ const moveSelectedTileToSquare = () => {
           const rowIndex = row;
           const colIndex = col + i / 10;
 
-          const position = rowIndex * 8 + colIndex;
+          const position = rowIndex * 5 + colIndex;
 
-          updatedBoard[Math.floor(position / 8)][position % 8].value = slice;
-          updatedBoard[Math.floor(position / 8)][position % 8].occupied = true;
-        } */
+          updatedBoard[Math.floor(position / 5)][position % 5].value = slice;
+          updatedBoard[Math.floor(position / 5)][position % 5].occupied = true;
+        } 
 
-        if (selectedTile !== '' && selectedSquare !== '') {
-          const { row, col } = selectedSquare;
-          const tileValue = selectedTileData;
+          const gameBoardElement = document.getElementById('gameBoard');
+        const squareGridElements = gameBoardElement.children;
+
+        // Loop through and remove a class from each child
+        for (const element of squareGridElements) {
+          element.classList.remove('SELECTED');
+        }
+
+        const tileholderElement = document.getElementById('tileholder');
+        const selectedTileElements = tileholderElement.querySelectorAll('.SELECTEDTILE');
+
+        // Loop through and remove a class from each selected tile
+        for (const element of selectedTileElements) {
+          element.classList.remove('SELECTEDTILE');
+        }
       
-          // Check if the selected square is empty
-          if (!board[row][col].occupied) {
-            const availableSpace = 8 - col; // Calculate available space in the row
-      
-            // Check if the tile value can fit in the available space
-            if (tileValue.length <= availableSpace) {
-              const updatedBoard = [...board];
-      
-              // Function to split the value either by 10 characters or by spaces
-              const splitValue = (value) => {
-                const wordsArray = value.split(/\s+/); // Split by spaces
-                const result = [];
-      
-                for (let i = 0; i < wordsArray.length; i++) {
-                  const word = wordsArray[i];
-                  for (let j = 0; j < word.length; j += 10) {
-                    result.push(word.slice(j, j + 10));
-                  }
-                }
-      
-                return result;
-              };
-      
-              // Update the board with the selected tile value
-              const slicedValues = splitValue(tileValue);
-              for (let i = 0; i < slicedValues.length; i++) {
-                const slice = slicedValues[i];
-                const rowIndex = row;
-                const colIndex = col + i;
-      
-                if (colIndex < 8) {
-                  const position = rowIndex * 8 + colIndex;
-      
-                  updatedBoard[Math.floor(position / 8)][position % 8].value = slice;
-                  updatedBoard[Math.floor(position / 8)][position % 8].occupied = true;
-                } else {
-                  console.log("Tile value exceeds available space");
-                  break;
-                }
-              }
             
         // Deselect the tile and square
         setSelectedTile('');
         setSelectedTileData('');
         setSelectedSquare('');
+        
         setBoard(updatedBoard);
 
         console.log('Board updated:', board);
@@ -208,14 +153,40 @@ const moveSelectedTileToSquare = () => {
 
 //Clear value from Selected square
 const clearSelectedSquare = () => {
-  setSelectedSquare('');
+  if (selectedSquare !== '') {
+    const { row, col } = selectedSquare;
 
-}
+    const updatedBoard = [...board];
+    updatedBoard[row][col] = { value: '', occupied: false };
+
+    const gameBoardElement = document.getElementById('gameBoard');
+    const squareGridElements = gameBoardElement.children;
+
+    // Loop through and remove a class from each child
+    for (const element of squareGridElements) {
+      element.classList.remove('SELECTED');
+    }
+
+
+    // Deselect the tile and square
+    setSelectedTile('');
+    setSelectedTileData('');
+    setSelectedSquare('');
+  
+
+    // Update the board
+    setBoard(updatedBoard);
+
+    console.log('Square cleared:', updatedBoard);
+  } else {
+    console.log('No selected square');
+  }
+};
 
 //Reset Board
 const resetBoard = () => {
-  const initialBoard = Array.from({ length: 8 }, () =>
-    Array.from({ length: 5 }, () => ({ value: '', occupied: false }))
+  const initialBoard = Array.from({ length: 5 }, () =>
+    Array.from({ length: 8 }, () => ({ value: '', occupied: false }))
   );
 
     setBoard(initialBoard);
@@ -238,7 +209,9 @@ const joinStringFunction = (arrayOfArrays) => {
 
 //Set Poem Title
 const setPoemTitle = (e) => {
-  setTitle(e.target.value);
+  const value= e?.target?.value;
+  setTitle(value);
+
 }
 
 //Toggle Title Div
@@ -267,11 +240,15 @@ const savePoemToDB= (board, title) => {
         headers: { "Authorization": `Bearer ${jwt}` }
       };
 
-      if (isEditing == true) {
+      const postData = {
+        board: board,
+        title: title
+      };
+     /* if (isEditing == true) {
         handleUpdate(board, title)
       }
-      else{
-      return axios.post(url, board, title, config);}
+      else{*/
+      return axios.post(url, postData, config);
     })
     .then(response => {
       let newPoemtitle = response.title;
@@ -316,13 +293,13 @@ const jwtPromise = getToken();
     return (
         
         <div id="BoardPageContainer" aria-label="Magnet Poem Board Page Container"  className="p-8 max-w mx-auto">
-        <PgThemes selectTileFunction={selectTileFunction} handleTileSelect={handleTileSelect} getToken={getToken} />
+        <PgThemes selectTileFunction={selectTileFunction} handleTileSelect={handleTileSelect} getToken={getToken} isAuthenticated={isAuthenticated} />
 
         <Buttons board={board} moveSelectedTileToSquare={moveSelectedTileToSquare} clearSelectedSquare={clearSelectedSquare}
         setPoemTitle={setPoemTitle} toggleTitleDiv={toggleTitleDiv} savePoemToDB={savePoemToDB} getToken={getToken} resetBoard={resetBoard}/>
         <GameBoard board={board} setSelectedSquare={selectSquareFunction} handleSelect={handleSelect} />
 
-        <userThemeBox getToken={getToken} />
+      
        
 
         </div> 

@@ -6,7 +6,7 @@ import { Form } from 'react-router-dom';
 
 const SERVER= import.meta.env.VITE_SERVER;
 
-export default function userThemeBox(props) {
+export default function UserThemeBox(props) {
   const [openTab, setOpenTab] = useState(1);
   const [UserTheme, setUserTheme] = useState([]);
   const [themetitle, setUserTitleTheme] = useState("");
@@ -16,7 +16,7 @@ export default function userThemeBox(props) {
 
   const userMakeTheme = async (theme) => {
     try {
-    e.preventDefault()
+   
     console.log(theme);
 
     jwtPromise = await getToken();
@@ -77,11 +77,11 @@ export default function userThemeBox(props) {
           <h2 className="text-2xl font-semibold mb-2 text-indigo-500" aria-label="Theme Generation Tab">Generate Your Own Theme</h2>
           <div className="flex gap-2 flex-wrap wrap ">
             <div>
-                <form class="m-4 flex">
+                <form className="m-4 flex">
                     <h4 className="text-med font-semibold mb-2 text-indigo-400">Write a word or two that describes your theme.</h4>
                     <Form>
-                    <input onChange={(e) => setUserTitleTheme({title: e.target.value})} value={themetitle.title} type="text" name="title" id="title" class="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Example: Witchy feels"/>
-                    <button class="px-8 rounded-r-lg bg-indigo-400  text-gray-800 font-bold p-4 uppercase border-indigo-500 border-t border-b border-r" type='submit' value="submit" onSubmit={userMakeTheme}>Generate Theme</button>
+                    <input onChange={(e) => setUserTitleTheme({title: e.target.value})} value={themetitle.title} type="text" name="title" id="title" className="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Example: Witchy feels"/>
+                    <button className="px-8 rounded-r-lg bg-indigo-400  text-gray-800 font-bold p-4 uppercase border-indigo-500 border-t border-b border-r" type='submit' value="submit" onSubmit={userMakeTheme}>Generate Theme</button>
                     </Form>
                     </form>
                 
