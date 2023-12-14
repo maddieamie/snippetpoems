@@ -12,16 +12,23 @@
   
   #gameBoard {
     display: grid;
-    grid-template-columns: repeat(10, 150px);
-    grid-template-rows: repeat(10, 50px);
+    grid-template-columns: repeat(5, 150px);
+    grid-template-rows: repeat(8, 50px);
     gap: 0px; 
   }
-    
+ 
+  div#titlediv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+}
+  
   #gameBoard div {
     width: 150px; 
     height: 50px; 
     background-color: white;
-    border: 1px solid #D1D5DB; 
+    border: 0.5px solid #D1D5DB; 
     display: flex;
     justify-content: center;
     align-items: center;

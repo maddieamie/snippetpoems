@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/index.css';
 
@@ -13,7 +13,7 @@ export default function PgThemes(props) {
   const [lgbt, setLgbt] = useState([]);
   const [bb, setBB] = useState([]);
 
-  const { getToken, selectTileFunction, handleTileSelect } = props;
+  const { getToken, selectTileFunction, handleTileSelect, isAuthenticated } = props;
 
   const hardarray= [
     "The",
@@ -76,24 +76,8 @@ export default function PgThemes(props) {
   const loadReg = async () => {
     console.log('Loading Reg...');
     setReg([...hardarray]);
-    console.log('Reg loaded:', Reg);
-    /*
-    try {
-        jwtPromise = await getToken();
+  
 
-        const config = {
-          headers: { "Authorization": `Bearer ${jwtPromise}` }
-        };
-      
-      console.log('config', config)
-
-      const res = await axios.get(`${SERVER}/get-Reg`, config);
-      console.log(res.data);
-      const array = res.data;
-      setReg(array);
-    } catch (error) {
-      console.log(`Error loading Reg: ${error}`);
-    }*/
   };
 
 
@@ -187,22 +171,32 @@ export default function PgThemes(props) {
     }
   };
 
-  /*const getPosition = (index, isReg2) => {
-    const refs = isReg2 ? tileRefsReg2.current : tileRefsReg.current;
-    const tilex = refs[index].current.offsetLeft;
-    setX(tilex);
+  const fetchData = async () => {
+    try {
+      const jwtPromise = await getToken();
+      const config = {
+        headers: { Authorization: `Bearer ${jwtPromise}` },
+      };
 
-    const tiley = refs[index].current.offsetTop;
-    setY(tiley);
-  };*/
+      if (isAuthenticated) {
+        loadWitchy();
+        loadRp();
+        loadSeattle();
+        loadLgbt();
+        loadBB();
+      }
+
+    } catch (error) {
+      console.log('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [getToken, isAuthenticated]);
 
   useEffect(() => {
     loadReg();
-    loadWitchy();
-    loadRp();
-    loadSeattle();
-    loadLgbt();
-    loadBB();
   }, []);
 
  
@@ -277,13 +271,13 @@ export default function PgThemes(props) {
                     safearea="Tab1ContentHolder"
                     key={index}
                     id={index}
-                    ref={tileRefsReg.current[index]}
+                  
                     className="center relative inline-block select-none whitespace-nowrap rounded-lg bg-purple-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white"  
                     category="generalwords"
                     aria-label={phrase}
                     data-value={phrase}
                     
-                    onClick={() => {
+                    onClick={(e) => {
                         selectTileFunction(index, phrase); handleTileSelect(e)
                     }}
                   >
@@ -307,11 +301,11 @@ export default function PgThemes(props) {
                     safearea="Tab2ContentHolder"
                     key={index}
                     id={index}
-                    ref={tileRefsReg2.current[index]}
+                
                     className="center relative inline-block select-none whitespace-nowrap rounded-lg bg-teal-400 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white" category="generalwords2"
                     aria-label={phrase}
                     data-value={phrase}
-                    onClick={() => {
+                    onClick={(e) => {
                         selectTileFunction(index, phrase); handleTileSelect(e)
                     }}
                     
@@ -337,13 +331,13 @@ export default function PgThemes(props) {
                     safearea="Tab1ContentHolder"
                     key={index}
                     id={index}
-                    ref={tileRefsRp.current[index]}
+                   
                     className="center relative inline-block select-none whitespace-nowrap rounded-lg bg-purple-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white" 
                     category="generalwords"
                     aria-label={phrase}
                     data-value={phrase}
                     
-                    onClick={() => {
+                    onClick={(e) => {
                         selectTileFunction(index, phrase); handleTileSelect(e)
                     }}
                   >
@@ -366,13 +360,13 @@ export default function PgThemes(props) {
                     safearea="Tab1ContentHolder"
                     key={index}
                     id={index}
-                    ref={tileRefsReg.current[index]}
+                   
                     className="center relative inline-block select-none whitespace-nowrap rounded-lg bg-purple-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white"  
                     category="generalwords"
                     aria-label={phrase}
                     data-value={phrase}
                     
-                    onClick={() => {
+                    onClick={(e) => {
                         selectTileFunction(index, phrase); handleTileSelect(e)
                     }}
                   >
@@ -396,13 +390,13 @@ export default function PgThemes(props) {
                     safearea="Tab1ContentHolder"
                     key={index}
                     id={index}
-                    ref={tileRefsReg.current[index]}
+                    
                     className="center relative inline-block select-none whitespace-nowrap rounded-lg bg-purple-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white"  
                     category="generalwords"
                     aria-label={phrase}
                     data-value={phrase}
                     
-                    onClick={() => {
+                    onClick={(e) => {
                         selectTileFunction(index, phrase); handleTileSelect(e)                   
                      }}
                   >
@@ -426,13 +420,13 @@ export default function PgThemes(props) {
                     safearea="Tab1ContentHolder"
                     key={index}
                     id={index}
-                    ref={tileRefsReg.current[index]}
+                   
                     className="center relative inline-block select-none whitespace-nowrap rounded-lg bg-purple-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white"  
                     category="generalwords"
                     aria-label={phrase}
                     data-value={phrase}
                     
-                    onClick={() => {
+                    onClick={(e) => {
                         selectTileFunction(index, phrase); handleTileSelect(e)
                     }}
                   >
