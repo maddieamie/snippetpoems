@@ -23,6 +23,28 @@
     align-items: center;
     padding: 30px;
 }
+
+.poem-container {
+    background-image: url(https://images.pexels.com/photos/2341290/pexels-photo-2341290.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2);
+    width: 100%;
+    height: 15rem;
+    display: block;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    text-transform: uppercase;
+    font-size: small;
+}
+
+.poem-cell {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+span#poemtitlething {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    text-transform: uppercase;
+    font-size: small;
+    font-weight:bold;
+}
   
   #gameBoard div {
     width: 150px; 
@@ -49,6 +71,20 @@
     border: 2px dotted black;
   }
 
+  div#Tab2ContentHolderGenerate {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-around; }
+
+    div#Tab1ContentHolderGenerate {
+        align-items: stretch;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: space-around; }
+
   /* Add styles for the occupied squares if needed */
   .boardSquareOccupiedString {
         display: flex;
@@ -62,6 +98,8 @@
         border-radius: 0.5rem;
         text-transform: uppercase;
         justify-content: space-around;
+        overflow-wrap: anywhere;
+
     } /* Change the color for occupied squares */
   
   

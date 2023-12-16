@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 import '../styles/index.css';
 import { useAuth0 } from "@auth0/auth0-react";
 
 const SERVER= import.meta.env.VITE_SERVER;
 
-export default function ProfileGallery () {
+export default function ProfileGallery (props) {
 
     const { getIdTokenClaims } = useAuth0();
    
+    const { setRouterData, routerData } = props;
+    const navigate = useNavigate();
+   
     const [poems, setPoems] = useState([]);
-    const [showAlert, setShowAlert] = useState(false);
+   
+
+    const handleEditPoem = (poemData) => {
+        setRouterData(poemData);
+        navigate('/');
+      };
   
     const getToken = async () => {
       try {
         const res = await getIdTokenClaims();
-        //return res;
+        //console.log(res);
         return res.__raw;
       } catch (error) {
         console.error('Error getting token:', error);
@@ -27,11 +36,12 @@ export default function ProfileGallery () {
   
       try {
         const jwt = await getToken();
+        //console.log('This is the jwt from GetToken', jwt);
         const url = `${SERVER}/poems`;
         const config = {
           headers: { "Authorization": `Bearer ${jwt}` },
         };
-  
+        console.log(config);
         const response = await axios.get(url, config);
         setPoems(response.data);
       } catch (error) {
@@ -44,10 +54,7 @@ export default function ProfileGallery () {
       fetchPoems();
     }, []); // Run once on component mount
   
-    const handleEditPoem = (poemData) => {
-      // Navigate to the MagnetBoard page with isEditing prop and poem data
-      navigate('/edit', { isEditing: true, poemData });
-    };
+  
   
     const handleDelete = (id) => {
       console.log('handleDelete running');
@@ -61,50 +68,47 @@ export default function ProfileGallery () {
           return axios.delete(`${SERVER}/poems/${id}`, config);
         })
         .then((response) => {
-          const deletedPoem = response.data;
-  
-          setPoems((prevPoems) => {
+            window.alert('Poem deleted', response);
+          
+        })
+        .then( setPoems((prevPoems) => {
             // Filter out the deleted poem from the state
             return prevPoems.filter((poem) => poem._id !== id);
-          });
-  
-          setShowAlert(true);
-        })
+          }))
         .catch((error) => {
           console.error('Error deleting poem:', error);
         });
     };
+return(
 
-<div class="flex min-h-screen w-full flex-wrap content-center justify-center p-5 bg-gray-200">
-          <div class="grid grid-cols-2 gap-3">
-            {showAlert && (
-              <Alert variant="success">
-                Poem Deleted!
-                <Button onClick={() => setShowAlert(false)} variant="outline-success">
-                  Close me
-                </Button>
-              </Alert>
-            )}
-
+<div className="flex min-h-screen w-full flex-wrap content-center justify-center p-5 bg-gray-200">
+          <div className="grid grid-cols-2 gap-3">
+        
             {poems.length > 0 ? (
               poems.map((poem) => (
                 <div className="w-80 bg-white p-3" key={poem._id}>
                   <div className="text black display-inline padding-.25em background-#FFC107 color-#ffffff box-shadow-.5em-0-0-#FFC107">
-                   <span>{poem.title}</span>
-                   <span>{poem.poem}</span>
+                   <span id="poemtitlething">{poem.title}</span>
+                   
                   </div>
-                  
-                  <img
-                    className="h-52 w-full object-cover"
-                    src="https://images.pexels.com/photos/2341290/pexels-photo-2341290.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                    alt="Marble Texture from Henry & Co at Pexels - www.pexels.com/@hngstrm/"
-                  />
+                 
+                  <div className="poem-container">
+                        {poem.poem.map((row, rowIndex) => (
+                            <div key={rowIndex} className="poem-row">
+                            {row.map((cell, cellIndex) => (
+                                <span key={cellIndex} className="poem-cell">
+                                {cell.value}
+                                </span>
+                            ))}
+                            </div>
+                        ))}
+                        </div>
                   <ul className="mt-3 flex flex-wrap">
-                    <li clasNames="mr-auto">
-                      <button onClick={() => handleEditPoem(poem)}>Edit Poem</button>
+                    <li className="mr-auto">
+                      <button className='before:ease relative h-10 w-20 overflow-hidden border border-black shadow-2xl before:absolute before:left-0 before:-ml-2 before:h-48 before:w-48 before:origin-top-right before:-translate-x-full before:translate-y-12 before:-rotate-90 before:bg-gray-900 before:transition-all before:duration-300 hover:text-white hover:shadow-black hover:before:-rotate-180' onClick={() => handleEditPoem(poem)}><span className='relative z-10'>Edit</span></button>
                     </li>
-                    <li class="mr-2">
-                      <button onClick={() => handleDelete(poem._id)}>Delete Poem</button>
+                    <li className="mr-2">
+                      <button className='before:ease relative h-10 w-20 overflow-hidden border border-black shadow-2xl before:absolute before:left-0 before:-ml-2 before:h-48 before:w-48 before:origin-top-right before:-translate-x-full before:translate-y-12 before:-rotate-90 before:bg-gray-900 before:transition-all before:duration-300 hover:text-white hover:shadow-black hover:before:-rotate-180' onClick={() => handleDelete(poem._id)}><span className='relative z-10'>Delete</span></button>
                     </li>
                   </ul>
                 </div>
@@ -120,16 +124,16 @@ export default function ProfileGallery () {
                   alt="Marble Texture from Henry & Co at Pexels - www.pexels.com/@hngstrm/"
                 />
                 <ul className="mt-3 flex flex-wrap">
-                  <li clasNames="mr-auto">
-                    <button onClick={() => handleEditPoem({})}>Edit Poem</button>
+                  <li className="mr-auto px-4 ">
+                    <button className='before:ease relative h-10 w-20 overflow-hidden border border-black shadow-2xl before:absolute before:left-0 before:-ml-2 before:h-48 before:w-48 before:origin-top-right before:-translate-x-full before:translate-y-12 before:-rotate-90 before:bg-gray-900 before:transition-all before:duration-300 hover:text-white hover:shadow-black hover:before:-rotate-180' onClick={() => handleEditPoem(poem)}><span className='relative z-10'>Edit</span></button>
                   </li>
-                  <li class="mr-2">
-                    <button onClick={() => handleDelete('')}>Delete Poem</button>
+                  <li className="mr-2 px-4">
+                    <button className='before:ease relative h-10 w-20 overflow-hidden border border-black shadow-2xl before:absolute before:left-0 before:-ml-2 before:h-48 before:w-48 before:origin-top-right before:-translate-x-full before:translate-y-12 before:-rotate-90 before:bg-gray-900 before:transition-all before:duration-300 hover:text-white hover:shadow-black hover:before:-rotate-180' onClick={() => handleDelete(poem._id)}><span className='relative z-10'>Delete</span></button>
                   </li>
                 </ul>
               </div>
             )}
           </div>
-        </div>
+        </div>)
       
 }

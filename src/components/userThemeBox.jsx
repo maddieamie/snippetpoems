@@ -1,39 +1,95 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {  useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/index.css';
-import { Form } from 'react-router-dom';
+import { Form } from 'react-bootstrap'; 
 
 
 const SERVER= import.meta.env.VITE_SERVER;
 
-export default function UserThemeBox(props) {
+export default function UserThemeBox({getToken, selectTileFunction, handleTileSelect}) {
   const [openTab, setOpenTab] = useState(1);
-  const [UserTheme, setUserTheme] = useState([]);
-  const [themetitle, setUserTitleTheme] = useState("");
+  const [UserTheme, setUserTheme] = useState(['newarray', 'will look like this']);
+  const [themerequest, setUserThemeRequest] = useState("");
+  const [findThemeRequest, setFindThemeRequest] = useState('');
+  const [FoundTheme, setFoundTheme] = useState(['theme here', 'theme there']);
 
 
-  const { getToken, selectTileFunction, handleTileSelect } = props;
+ 
 
-  const userMakeTheme = async (theme) => {
-    try {
-   
-    console.log(theme);
+  const callUserDB = () =>
+  {
+    console.log(themerequest);
+    userMakeTheme(themerequest);
+  }
 
-    jwtPromise = await getToken();
+  const callThemeDB = () =>
+  {
+    console.log(findThemeRequest);
+    findUserTheme(findThemeRequest);
+  }
 
-        const config = {
-          headers: { "Authorization": `Bearer ${jwtPromise}` }
-        };
-      
+const findUserTheme = (findThemeRequest) => {
+    console.log(findThemeRequest);
+    const theme = findThemeRequest;
+  
+   return getToken()
+    .then((jwtPromise) => {
+      const headers = {
+        Authorization: `Bearer ${jwtPromise}`,
+      };
 
-      const res = await axios.post(`${SERVER}/generate-theme?theme=${theme}`, config);
-      console.log(res.data);
-      const array = res.data;
-      setUserTheme(array);
-    } catch (error) {
-      console.log(`Error generating User Theme: ${error}`);
-    }
+      console.log(headers); // Optional: Log the headers for debugging
+
+      return axios.get(
+        `${SERVER}/fetch-theme?theme=${theme}`,
+        {
+          headers: headers,
+        }
+      );
+    })
+      .then((res) => {
+        console.log(res.data);
+        const array = res.data.array;
+        setFoundTheme(array);
+      })
+      .catch((error) => {
+        console.log(`Error generating User Theme: ${error}`);
+      });
   };
+
+
+
+  const userMakeTheme = (themerequest) => {
+    console.log(themerequest);
+    const theme = themerequest;
+  
+   return getToken()
+    .then((jwtPromise) => {
+      const headers = {
+        Authorization: `Bearer ${jwtPromise}`,
+      };
+
+      console.log(headers); // Optional: Log the headers for debugging
+
+      return axios.post(
+        `${SERVER}/generate-theme?theme=${theme}`, null, 
+        {
+          headers: headers,
+        }
+      );
+    })
+      .then((res) => {
+        console.log(res.data);
+        const array = res.data.phrases;
+        setUserTheme(array);
+      })
+      .catch((error) => {
+        console.log(`Error generating User Theme: ${error}`);
+      });
+  };
+  
+
+
 
   /*
   const loadUserTheme = async () => {
@@ -68,31 +124,42 @@ export default function UserThemeBox(props) {
         >
           Create Theme
         </button>
+
+        <button
+          onClick={() => setOpenTab(2)}
+          className={`flex-1 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${
+            openTab === 2 ? 'bg-indigo-500 text-white' : ''
+          }`}
+        >
+          Find Theme of Yours
+        </button>
         </div>
      
  
 
       {openTab === 1 && (
-        <div id="Tab1ContentHolder" className="transition-all duration-300 bg-white p-4 rounded-lg shadow-md border-l-4 border-indigo-500">
+        <div id="Tab1ContentHolderGenerate" className="transition-all duration-300 bg-white p-4 rounded-lg shadow-md border-l-4 border-indigo-500">
           <h2 className="text-2xl font-semibold mb-2 text-indigo-500" aria-label="Theme Generation Tab">Generate Your Own Theme</h2>
           <div className="flex gap-2 flex-wrap wrap ">
-            <div>
-                <form className="m-4 flex">
-                    <h4 className="text-med font-semibold mb-2 text-indigo-400">Write a word or two that describes your theme.</h4>
+          <h4 className="text-med font-semibold mb-2 text-indigo-400">Write a word or two that describes your theme.</h4> 
+            <div className="m-8 flex">
+                
+                    
+                    
                     <Form>
-                    <input onChange={(e) => setUserTitleTheme({title: e.target.value})} value={themetitle.title} type="text" name="title" id="title" className="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Example: Witchy feels"/>
-                    <button className="px-8 rounded-r-lg bg-indigo-400  text-gray-800 font-bold p-4 uppercase border-indigo-500 border-t border-b border-r" type='submit' value="submit" onSubmit={userMakeTheme}>Generate Theme</button>
+                    <input onChange={({target: {value}}) => setUserThemeRequest(value)} value={themerequest} type="text" name="title" id="title" className="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Example: Witchy feels"/>
+                    <button className="px-8 rounded-r-lg bg-indigo-400  text-gray-800 font-bold p-4 uppercase border-indigo-500 border-t border-b border-r" type="button"  onClick={callUserDB}>Generate Theme</button>
                     </Form>
-                    </form>
+                    
                 
             </div>
             
             
-            
-              {UserTheme.length > 0 &&
+            <div className='flex gap-2 flex-wrap wrap'>
+              {UserTheme && UserTheme.length > 0 &&
                 UserTheme.map((phrase, index) => (
                   <div
-                    safearea="Tab1ContentHolder"
+                    safearea="Tab1ContentHolderGenerate"
                     key={index}
                     id={index}
                     
@@ -102,7 +169,7 @@ export default function UserThemeBox(props) {
                     data-value={phrase}
                     
                     onClick={
-                        () => {
+                        (e) => {
                             selectTileFunction(index, phrase); handleTileSelect(e)
                           }
                     }
@@ -110,13 +177,56 @@ export default function UserThemeBox(props) {
                     {phrase}
                   </div>
                 ))}
-            
+            </div>
           </div>
         </div>
       )}
 
-
+        {openTab === 2 && (
+                <div id="Tab2ContentHolderGenerate" className="transition-all duration-300 bg-white p-4 rounded-lg shadow-md border-l-4 border-indigo-500">
+                <h2 className="text-2xl font-semibold mb-2 text-indigo-500" aria-label="Theme Finder Tab">Find Your Themes</h2>
+                <div className="flex gap-2 flex-wrap wrap ">
+                <h4 className="text-med font-semibold mb-2 text-indigo-400">Write a theme you remember making.</h4>
+                    <div className="m-10 flex">
+                        
+                           
+                            
+                            <Form>
+                            <input onChange={({target: {value}}) => setFindThemeRequest(value)} value={findThemeRequest} type="text" name="title" id="title" className="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Example: Witchy feels"/>
+                            <button className="px-8 rounded-r-lg bg-indigo-400  text-gray-800 font-bold p-4 uppercase border-indigo-500 border-t border-b border-r" type="button"  onClick={callThemeDB}>Find theme</button>
+                            </Form>
+                            
+                        
+                    </div>
+                    
+                    
+                    <div className='flex gap-2 flex-wrap wrap'>
+                    {FoundTheme && FoundTheme.length > 0 &&
+                        FoundTheme.map((phrase, index) => (
+                        <div
+                            safearea="Tab2ContentHolder"
+                            key={index}
+                            id={index}
+                            
+                            className="center relative inline-block select-none whitespace-nowrap rounded-lg bg-purple-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white"  
+                            category="generalwords"
+                            aria-label={phrase}
+                            data-value={phrase}
+                            
+                            onClick={
+                                (e) => {
+                                    selectTileFunction(index, phrase); handleTileSelect(e)
+                                }
+                            }
+                        >
+                            {phrase}
+                        </div>
+                        ))}
+                    </div>
+                </div>
+                </div>
+            )}
       
     </div>
   );
-}
+                }
