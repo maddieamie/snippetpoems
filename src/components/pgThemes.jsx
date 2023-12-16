@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/index.css';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const SERVER= import.meta.env.VITE_SERVER;
 
@@ -13,7 +14,11 @@ export default function PgThemes(props) {
   const [lgbt, setLgbt] = useState([]);
   const [bb, setBB] = useState([]);
 
-  const { getToken, selectTileFunction, handleTileSelect, isAuthenticated } = props;
+  const { authData, selectTileFunction, handleTileSelect} = props;
+
+
+  
+
 
   const hardarray= [
     "The",
@@ -73,6 +78,40 @@ export default function PgThemes(props) {
   ]
 
 
+ // <------------------- Loading themes --------------------->
+
+
+  useEffect(() => {
+
+    if(props.authData.isAuthenticated){
+        fetchData();
+    }
+  
+  }, [authData.isAuthenticated]);
+
+  const fetchData = async () => {
+    try {
+        console.log('FetchDatarunning')
+        
+        loadWitchy();
+        loadRp();
+        loadSeattle();
+        loadLgbt();
+        loadBB();
+      
+
+    } catch (error) {
+      console.log('Error fetching data:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    loadReg();
+  }, []);
+
+  //<----------- functions for each loading theme ---------------->
+
   const loadReg = async () => {
     console.log('Loading Reg...');
     setReg([...hardarray]);
@@ -82,17 +121,12 @@ export default function PgThemes(props) {
 
 
   const loadWitchy = async () => {
-    try {
-        jwtPromise = await getToken();
-
-        const config = {
-          headers: { "Authorization": `Bearer ${jwtPromise}` }
-        };
-      
-      console.log('config', config)
-      const res = await axios.get(`${SERVER}/get-witchy`, config);
-      console.log(res.data);
+    try {   
+        console.log('Loading Witchy')
+      const res = await axios.get(`${SERVER}/get-witchy`);
+     
       const array = res.data;
+      //console.log('Witchy', array)
       setWitchy(array);
     } catch (error) {
       console.log(`Error loading Witchy: ${error}`);
@@ -101,16 +135,11 @@ export default function PgThemes(props) {
 
   const loadRp = async () => {
     try {
-        jwtPromise = await getToken();
 
-        const config = {
-          headers: { "Authorization": `Bearer ${jwtPromise}` }
-        };
-      
-      console.log('config', config)
-      const res = await axios.get(`${SERVER}/get-RP`, config);
-      console.log(res.data);
+      const res = await axios.get(`${SERVER}/get-RP`);
+     
       const array = res.data;
+      //console.log(array);
       setRp(array);
     } catch (error) {
       console.log(`Error loading RP: ${error}`);
@@ -119,15 +148,9 @@ export default function PgThemes(props) {
 
   const loadSeattle = async () => {
     try {
-        jwtPromise = await getToken();
 
-        const config = {
-          headers: { "Authorization": `Bearer ${jwtPromise}` }
-        };
-      
-      console.log('config', config)
-      const res = await axios.get(`${SERVER}/get-seattle`, config);
-      console.log(res.data);
+      const res = await axios.get(`${SERVER}/get-seattle`);
+   
       const array = res.data;
       setSeattle(array);
     } catch (error) {
@@ -137,15 +160,9 @@ export default function PgThemes(props) {
 
   const loadLgbt = async () => {
     try {
-        jwtPromise = await getToken();
 
-        const config = {
-          headers: { "Authorization": `Bearer ${jwtPromise}` }
-        };
-      
-      console.log('config', config)
-      const res = await axios.get(`${SERVER}/get-lgbt`, config);
-      console.log(res.data);
+      const res = await axios.get(`${SERVER}/get-lgbt`);
+
       const array = res.data;
       setLgbt(array);
     } catch (error) {
@@ -155,15 +172,8 @@ export default function PgThemes(props) {
 
   const loadBB = async () => {
     try {
-        jwtPromise = await getToken();
-
-        const config = {
-          headers: { "Authorization": `Bearer ${jwtPromise}` }
-        };
-      
-      console.log('config', config)
-      const res = await axios.get(`${SERVER}/get-bb`, config);
-      console.log(res.data);
+      const res = await axios.get(`${SERVER}/get-bb`);
+ 
       const array = res.data;
       setBB(array);
     } catch (error) {
@@ -171,33 +181,7 @@ export default function PgThemes(props) {
     }
   };
 
-  const fetchData = async () => {
-    try {
-      const jwtPromise = await getToken();
-      const config = {
-        headers: { Authorization: `Bearer ${jwtPromise}` },
-      };
-
-      if (isAuthenticated) {
-        loadWitchy();
-        loadRp();
-        loadSeattle();
-        loadLgbt();
-        loadBB();
-      }
-
-    } catch (error) {
-      console.log('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [getToken, isAuthenticated]);
-
-  useEffect(() => {
-    loadReg();
-  }, []);
+ 
 
  
 

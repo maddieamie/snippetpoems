@@ -14,7 +14,7 @@ const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
 const redirectUri = import.meta.env.VITE_AUTH0_REDIRECT_URI;
 
 
-
+console.log('Loading React app:', domain, clientId, redirectUri);
 root.render(
  <React.StrictMode>
  <Auth0Provider

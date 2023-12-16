@@ -1,37 +1,26 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './Header';
-import About from './About';
-import Profile from './Profile';
-import MagnetBoard from './MagnetBoard';
-//import { CallbackPage } from "./CallbackPage";
-//<Route path="/callback" element={<CallbackPage />} />
+import React, { useState, useEffect } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-
-import '../styles/index.css';
+import AppRouter from "./AppRouter";
 
 const App = () => {
-  const { isAuthenticated } = useAuth0();
+    const { isAuthenticated, isLoading } = useAuth0();
 
-  return (
-    <>
-      <Router>
-      <Header />
-      
-        <Routes>
-          
-          <Route path="/about" element={<About />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route
-            path="/"
-            element={ <MagnetBoard /> }
-          />
-       
-        </Routes>
-      
-      </Router>
-    </>
-  );
+    // Auth data state
+    const [authData, setAuthData] = useState({ isAuthenticated: false, isLoading: true });
+
+    // Router data state
+    const [routerData, setRouterData] = useState({});
+
+    useEffect(() => {
+        if (!isLoading) {
+            // Update the authData state once the authentication status is determined
+            setAuthData({ isAuthenticated, isLoading });
+        }
+    }, [isAuthenticated, isLoading]);
+
+    return (
+        <AppRouter routerData={routerData} setRouterData={setRouterData} authData={authData} />
+    );
 };
 
 export default App;

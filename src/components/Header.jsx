@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
 import Login from './Login';
 import Logout from './Logout';
 
-const Header = () => {
+const Header = ({authData}) => {
 
-    const {
-        isAuthenticated,
-      } = useAuth0();
+   
+   
 
   const [percent, setPercent] = useState(0);
 
@@ -66,7 +64,7 @@ const Header = () => {
               className="flex text-gray-600 cursor-pointer transition-colors duration-300 font-semibold"
             >
              
-          {isAuthenticated ? <Logout /> : <Login /> }  
+          {authData.isAuthenticated ? <Logout /> : <Login /> }  
             </div>
             
           </div>
