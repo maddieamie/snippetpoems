@@ -38,7 +38,7 @@ const findUserTheme = (findThemeRequest) => {
         Authorization: `Bearer ${jwtPromise}`,
       };
 
-      console.log(headers); // Optional: Log the headers for debugging
+     // console.log(headers); // Optional: Log the headers for debugging
 
       return axios.get(
         `${SERVER}/fetch-theme?theme=${theme}`,
@@ -48,7 +48,7 @@ const findUserTheme = (findThemeRequest) => {
       );
     })
       .then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
         const array = res.data.array;
         setFoundTheme(array);
       })
@@ -69,10 +69,10 @@ const findUserTheme = (findThemeRequest) => {
         Authorization: `Bearer ${jwtPromise}`,
       };
 
-      console.log(headers); // Optional: Log the headers for debugging
+      //console.log(headers); // Optional: Log the headers for debugging
 
       return axios.post(
-        `${SERVER}/generate-theme?theme=${theme}`, null, 
+        `${SERVER}/generate-theme?theme=${theme}`, null,
         {
           headers: headers,
         }
@@ -155,7 +155,7 @@ const findUserTheme = (findThemeRequest) => {
             </div>
             
             
-            <div className='flex gap-2 flex-wrap wrap'>
+            <div id="flex1" className='flex gap-2 flex-wrap wrap'>
               {UserTheme && UserTheme.length > 0 &&
                 UserTheme.map((phrase, index) => (
                   <div
@@ -163,7 +163,7 @@ const findUserTheme = (findThemeRequest) => {
                     key={index}
                     id={index}
                     
-                    className="center relative inline-block select-none whitespace-nowrap rounded-lg bg-purple-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white"  
+                    className="center relative inline-block select-none whitespace-nowrap rounded-lg bg-teal-400 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white"  
                     category="generalwords"
                     aria-label={phrase}
                     data-value={phrase}
@@ -200,7 +200,7 @@ const findUserTheme = (findThemeRequest) => {
                     </div>
                     
                     
-                    <div className='flex gap-2 flex-wrap wrap'>
+                    <div id="flex1" className='flex gap-2 flex-wrap wrap'>
                     {FoundTheme && FoundTheme.length > 0 &&
                         FoundTheme.map((phrase, index) => (
                         <div

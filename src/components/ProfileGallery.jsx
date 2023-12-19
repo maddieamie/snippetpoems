@@ -68,7 +68,7 @@ export default function ProfileGallery (props) {
           return axios.delete(`${SERVER}/poems/${id}`, config);
         })
         .then((response) => {
-            window.alert('Poem deleted', response);
+         window.alert('Poem deleted', response.title);
           
         })
         .then( setPoems((prevPoems) => {
