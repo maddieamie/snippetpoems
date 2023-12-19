@@ -293,7 +293,7 @@ const savePoemToDB = (board, title) => {
 
   jwtPromise
     .then(jwt => {
-      console.log('JWT from SavePoem', jwt);
+      //console.log('JWT from SavePoem', jwt);
       const config = {
         headers: { "Authorization": `Bearer ${jwt}` }
       };
@@ -310,8 +310,15 @@ const savePoemToDB = (board, title) => {
       else{
       return axios.post(url, postData, config);
     }})
-    .then(response => {
-      window.alert(`Poem Created: ${response.data}`);
+    .then((response) => {
+      console.log(response);
+      const confirmed = window.confirm(`Poem Created! Do you want to clear the board?`);
+      
+  
+      if (confirmed) {
+        // board clears
+        resetBoard();
+      }
     })
     .catch(error => {
       console.error('Error posting poem:', error);
@@ -335,19 +342,19 @@ const jwtPromise = getToken();
 
     const postData = {
       title: title,
-      board: board
+      poem: board
     };
   
     return axios.put(`${url}/${id}`, postData, config);
   })
   .then((response) => {
-    const update = response;
-    const confirmed = window.confirm(`Poem Updated. Do you want to go to your profile?`);
+    console.log(response);
+    const confirmed = window.confirm(`Poem Updated!. Do you want to clear the board?`);
+    
 
     if (confirmed) {
-      // User clicked "OK," navigate to the profile
-      setRouterData({});
-      navigate('/profile');
+      // board clears
+      resetBoard();
     }
   })
   .catch(error => {

@@ -71,6 +71,14 @@ span#poemtitlething {
     border: 2px dotted black;
   }
 
+  #flex1 div.SELECTEDTILE {
+    border: 2px dotted black;
+  }
+
+  #flex2 div.SELECTEDTILE {
+    border: 2px dotted black;
+  }
+
   div#Tab2ContentHolderGenerate {
     align-items: stretch;
     display: flex;
