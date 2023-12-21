@@ -18,8 +18,18 @@ const App = () => {
         }
     }, [isAuthenticated, isLoading]);
 
+    const [toasts, setToasts] = useState([]);
+
+    const addToast = (message, type = 'general') => {
+      setToasts([...toasts, { id: Date.now(), message, type }]);
+    };
+  
+    const removeToast = (id) => {
+      setToasts(toasts.filter(toast => toast.id !== id));
+    };
+
     return (
-        <AppRouter routerData={routerData} setRouterData={setRouterData} authData={authData} />
+        <AppRouter routerData={routerData} setRouterData={setRouterData} authData={authData} toasts={toasts} setToasts={setToasts} addToast={addToast} removeToast={removeToast}/>
     );
 };
 

@@ -25,7 +25,7 @@ class About extends Component {
                 <div className="flex justify-center mt-5">
             <div className="mt-5">
                 <h3 className="text-l font-semibold text-indigo-400">A place for people to chill & think.</h3>
-                <p className="text-gray-600 mt-2">   Snippet Poems is a place for creative associations with a generated theme. This could be a place to write poetry or just generate new creative ideas through word association. It's minimalistic fun!</p>
+                <p className="text-gray-600 mt-2">   Snippet Poems is a place for creative associations with a generated theme. This could be a place to write poetry or just generate new creative ideas through word association. It's a place to feel relaxed and unbothered by the world and hone in on your creative process. </p>
             </div>
             </div>
         </div>

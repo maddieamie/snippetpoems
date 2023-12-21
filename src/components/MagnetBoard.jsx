@@ -4,7 +4,9 @@ import PgThemes from "./pgThemes";
 import GameBoard from "./GameBoard"
 import Buttons from './Buttons';
 import UserThemeBox from "./userThemeBox";
-//import UserThemeBox from "./UserThemeBox.jsx";
+import NotificationBox from "./NotificationBox";
+import ToastContainer from "./ToastContainer";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -20,11 +22,12 @@ const MagnetBoard = (props) => {
   const [title, setPoemTitle] = useState('');
   const [selectedTileData, setSelectedTileData] = useState('');
   const [selectedSquareData, setSelectedSquareData] = useState('');
+  const [notifications, setNotifications] = useState('');
   
 
   const { getIdTokenClaims } = useAuth0();
 
-  const { routerData, setRouterData, authData } = props;
+  const { routerData, setRouterData, authData, toasts, setToasts, addToast, removeToast } = props;
   const navigate = useNavigate();
   
 
@@ -48,7 +51,8 @@ const createBoard = async () => {
       setBoard(poemboard);
     } else {
       //
-      console.log('empty board loading instead of the old data')
+      console.log('empty board loading instead of the old data');
+      addToast("New board loading");
       const initialBoard = Array.from({ length: 8 }, () =>
         Array.from({ length: 5 }, () => ({ value: '', occupied: false }))
       );
@@ -56,6 +60,7 @@ const createBoard = async () => {
     }
   } catch (error) {
     console.log('Error creating Board', error);
+    addToast(`Error creating Board: ${error}`, 'error');
   }
 };
 
@@ -161,11 +166,11 @@ const moveSelectedTileToSquare = () => {
             updatedBoard[Math.floor(position / 5)][position % 5].occupied = true;
           } else {
             console.log('Selected square is already occupied');
+            setNotifications('Selected square is already occupied');
           }
         } else {
           console.log('Not enough space in the row for that tile');
-          // You might want to throw an error or handle this situation accordingly
-          // Example: throw new Error('Not enough space in the row for that tile');
+          setNotifications('Sorry, there is not enough space in the row for that tile. Try another square. :)');
           return;
         }
       }
@@ -178,6 +183,7 @@ const moveSelectedTileToSquare = () => {
         updatedBoard[Math.floor(position / 5)][position % 5].occupied = true;
       } else {
         console.log('Selected square is already occupied');
+        setNotifications('Selected square is already occupied. Clear it using "Clear Selected Tile" first.');
       }
     }
   
@@ -207,6 +213,7 @@ const moveSelectedTileToSquare = () => {
     console.log('Board updated:', updatedBoard);
   } else {
     console.log('No selected tile or square');
+    setNotifications('No selected tile or square');
   }
   
 };
@@ -241,8 +248,10 @@ const clearSelectedSquare = () => {
     setBoard(updatedBoard);
 
     console.log('Square cleared:', updatedBoard);
+    setNotifications('Square cleared!');
   } else {
     console.log('No selected square');
+    setNotifications('No selected square');
   }
 };
 
@@ -277,7 +286,8 @@ const joinStringFunction = (arrayOfArrays) => {
 const getToken = () => {
   return getIdTokenClaims()
   .then(res => res.__raw)
-  .catch(error => {console.log('Error getting token:', error)});
+  .catch(error => {console.log('Error getting token:', error);
+  addToast(`Error getting your authorization: ${error}`, 'error');});
 }
 
 const callDB = () => {
@@ -287,6 +297,7 @@ const callDB = () => {
 
 const savePoemToDB = (board, title) => {
   console.log('post poem running')
+  addToast('Creating poem in database...');
 
   const jwtPromise = getToken();
   const url = `${SERVER}/poems`
@@ -302,32 +313,33 @@ const savePoemToDB = (board, title) => {
         title: title,
         poem: board
       };
-      console.log(postData);
+      //console.log(postData);
 
      if (routerData && routerData?.poem) {
         handleUpdate(board, title, routerData)
       }
-      else{
-      return axios.post(url, postData, config);
-    }})
-    .then((response) => {
-      console.log(response);
-      const confirmed = window.confirm(`Poem Created! Do you want to clear the board?`);
-      
-  
-      if (confirmed) {
-        // board clears
-        resetBoard();
+      else {
+        return axios.post(url, postData, config)
+          .then((response) => {
+            console.log(response);
+            const confirmed = window.confirm(`Poem Created! Do you want to clear the board?`);
+
+            if (confirmed) {
+              resetBoard();
+            }
+          });
       }
     })
     .catch(error => {
       console.error('Error posting poem:', error);
+      addToast(`Error creating poem in database: ${error}`, 'error');
     });
 }
 
 
 const handleUpdate = (board, title, routerData) => {
   console.log('HandleUpdate running');
+  addToast('Updating poem...');
 
 const id = routerData._id;
 
@@ -359,6 +371,8 @@ const jwtPromise = getToken();
   })
   .catch(error => {
     console.error('Error updating poem:', error);
+    
+    addToast(`Error updating poem in database: ${error}`, 'error');
   });
 
 }
@@ -369,13 +383,23 @@ const jwtPromise = getToken();
     return (
         
         <div id="BoardPageContainer" aria-label="Magnet Poem Board Page Container"  className="p-8 max-w mx-auto">
-        <PgThemes authData={authData} selectTileFunction={selectTileFunction} handleTileSelect={handleTileSelect} />
+        <PgThemes authData={authData} selectTileFunction={selectTileFunction} handleTileSelect={handleTileSelect} setToasts={setToasts} addToast={addToast} />
+
+        <NotificationBox 
+        selectedTile={selectedTile}
+        selectedTileData={selectedTileData}
+        selectedSquare={selectedSquare}
+        selectedSquareData={selectedSquareData}
+        notifications={notifications} />
 
         <Buttons authData={authData} board={board} moveSelectedTileToSquare={moveSelectedTileToSquare} clearSelectedSquare={clearSelectedSquare}
-        setPoemTitle={setPoemTitle} callDB={callDB} getToken={getToken} resetBoard={resetBoard}/>
+        setPoemTitle={setPoemTitle} callDB={callDB} getToken={getToken} resetBoard={resetBoard} setToasts={setToasts} addToast={addToast}/>
+
         <GameBoard board={board} setSelectedSquare={selectSquareFunction} handleSelect={handleSelect} />
 
-        <UserThemeBox getToken={getToken} selectTileFunction={selectTileFunction} handleTileSelect={handleTileSelect} />
+        <UserThemeBox getToken={getToken} selectTileFunction={selectTileFunction} handleTileSelect={handleTileSelect} setToasts={setToasts} addToast={addToast} />
+
+        <ToastContainer toasts={toasts} setToasts={setToasts} addToast={addToast} removeToast={removeToast}/>
        
 
         </div> 
