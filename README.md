@@ -63,10 +63,13 @@ Languages: React/Vite, Node, CSS, Tailwind, Javascript, Mongoose, Express, Cors
 Services: OpenAI API, Netlify, Render, MongoDB Atlas
 
 # Domain Model
+![Domain model](https://github.com/maddieamie/snippetpoems/assets/118625447/cc109b5c-90bb-4664-811d-23b75fd78c78)
 
 # Database Model
+![Server DB Model (1)](https://github.com/maddieamie/snippetpoems/assets/118625447/834fabf9-2af8-43c5-8179-a7da0d93b638)
 
 # Wireframe
+<img width="500" alt="WireFrame" src="https://github.com/maddieamie/snippetpoems/assets/118625447/f6b47414-523e-477a-8c57-fe1aa881d277">
 
 # Usage Notes (!)
 
