@@ -14,68 +14,32 @@ export default function PgThemes(props) {
   const [lgbt, setLgbt] = useState([]);
   const [bb, setBB] = useState([]);
 
-  const { authData, selectTileFunction, handleTileSelect} = props;
+
+  const [isWitchyLoading, setIsWitchyLoading] = useState(false);
+  const [isSeattleLoading, setIsSeattleLoading] = useState(false);
+  const [isRpLoading, setIsRpLoading] = useState(false);
+  const [islgbtLoading, setIsLgbtLoading] = useState(false);
+  const [isbbLoading, setIsbbLoading] = useState(false);
+
+
+  const { authData, selectTileFunction, handleTileSelect, addToast} = props;
 
 
   
 
 
-  const hardarray= [
-    "The",
-    "Be",
-    "Shantay Shantay",
-    "Together",
-    "Strawberry",
-    "Orange peel",
-    "In",
-    "That",
-    "Have",
-    "I",
-    "It",
-    "For",
-    "Not",
-    "On",
-    "He",
-    "We",
-    "With",
-    "As",
-    "You",
-    "Do",
-    "At",
-    "This",
-    "But",
-    "His",
-    "By",
-    "From",
-    "They",
-    "We",
-    "Say",
-    "Her",
-    "She",
-    "Or",
-    "An",
-    "Will",
-    "My",
-    "One",
-    "All",
-    "Would",
-    "There",
-    "Their",
-    "What",
-    "So",
-    "Up",
-    "Out",
-    "If",
-    "About",
-    "Who",
-    "Get",
-    "Hers",
-    "His",
-    "Theirs",
-    "Their",
-    "A",
-    "Sky"
+  const hardarray= [ "a", "about", "actually", "all", "always", "am",  "an",
+"and", "are", "around", "as", "at", "be", "but", "by", "do", "e", "ed", "er",
+    "es", "for", "from", "get",  "has", "have",  "he",  "here",  "her",  "hers",  "i",  "if",  "in",  "ing",  "is",  "it",  "like",  "live",  "love",  "ly",  "my",  "not", "of", "old", "on", "only", "or", "our",
+    "out", "say", "she",  "sky",   "so",  "than",  "thanks", "that", "the",
+    "then", "there", "they", "this",  "though",  "to",  "too", "together",
+    "was", "we", "were",  "what",  "who",  "why",  "will",  "with",  "woman",
+    "work",  "world",  "would",   "y",   "you",   "ze",  "xe",  "zir",  "ze",
+    "zir",  "theirs",  "xirs",  "zirs",  "the",  "be",  "to",  "of",  "and",  "a", "in", "that",  "have",  "i",  "it",  "for", "not", "on","he", "we", "with",  "as",  "you",  "do",  "at",  "this",  "but",  "his",  "by", "from",  "they",  "say",  "her",  "she",  "or",  "an",
+    "will",  "my", "one", "all", "would",  "there",  "their",  "what",
+    "so",  "up",  "out",  "if",  "about",  "who", "get", "Shantay Shantay", "wife", "husband", "partner", "spouse", "child", "sibling", "sister", "brother", "forgive", "forget", "laugh", "understand", "glitter", "boom"
   ]
+  
 
 
  // <------------------- Loading themes --------------------->
@@ -92,6 +56,7 @@ export default function PgThemes(props) {
   const fetchData = async () => {
     try {
         console.log('FetchDatarunning')
+        addToast('Loading themes!');
         
         loadWitchy();
         loadRp();
@@ -102,6 +67,7 @@ export default function PgThemes(props) {
 
     } catch (error) {
       console.log('Error fetching data:', error);
+      addToast('Error fetching themes, sorry.', 'error');
     }
   };
 
@@ -114,6 +80,7 @@ export default function PgThemes(props) {
 
   const loadReg = async () => {
     console.log('Loading Reg...');
+    addToast('Loading basic theme...');
     setReg([...hardarray]);
   
 
@@ -123,6 +90,7 @@ export default function PgThemes(props) {
   const loadWitchy = async () => {
     try {   
         console.log('Loading Witchy')
+        setIsWitchyLoading(true);
       const res = await axios.get(`${SERVER}/get-witchy`);
      
       const array = res.data;
@@ -131,11 +99,14 @@ export default function PgThemes(props) {
     } catch (error) {
       console.log(`Error loading Witchy: ${error}`);
     }
+    finally {
+        setIsWitchyLoading(false);
+    }
   };
 
   const loadRp = async () => {
     try {
-
+        setIsRpLoading(true);
       const res = await axios.get(`${SERVER}/get-RP`);
      
       const array = res.data;
@@ -144,11 +115,15 @@ export default function PgThemes(props) {
     } catch (error) {
       console.log(`Error loading RP: ${error}`);
     }
+    finally {
+        setIsRpLoading(false);
+    }
   };
 
   const loadSeattle = async () => {
     try {
-
+        
+    setIsSeattleLoading(true); 
       const res = await axios.get(`${SERVER}/get-seattle`);
    
       const array = res.data;
@@ -156,11 +131,15 @@ export default function PgThemes(props) {
     } catch (error) {
       console.log(`Error loading Seattle: ${error}`);
     }
+    finally {
+        setIsSeattleLoading(false);
+    }
   };
 
   const loadLgbt = async () => {
     try {
-
+        
+        setIsLgbtLoading(true);
       const res = await axios.get(`${SERVER}/get-lgbt`);
 
       const array = res.data;
@@ -168,16 +147,23 @@ export default function PgThemes(props) {
     } catch (error) {
       console.log(`Error loading LGBT: ${error}`);
     }
+    finally {
+        setIsLgbtLoading(false);
+    }
   };
 
   const loadBB = async () => {
     try {
+        setIsbbLoading(true);
       const res = await axios.get(`${SERVER}/get-bb`);
  
       const array = res.data;
       setBB(array);
     } catch (error) {
       console.log(`Error loading BB: ${error}`);
+    }
+    finally {
+        setIsbbLoading(false);
     }
   };
 
@@ -278,6 +264,9 @@ export default function PgThemes(props) {
         <div id="Tab2ContentHolder" className="transition-all duration-300 bg-white p-4 rounded-lg shadow-md border-l-4 border-indigo-500">
           <h2 className="text-2xl font-semibold mb-2 text-indigo-500" aria-label="Basic Words 2">Witchy</h2>
           <div className="flex gap-2 flex-wrap wrap">
+
+          {!props.authData.isAuthenticated && <p className='themetext'>Please login to view the tiles of this theme.</p>}
+            {isWitchyLoading && <p className='themetext'>Loading data from server...</p>}
          
               {Witchy.length > 0 &&
                 Witchy.map((phrase, index) => (
@@ -308,6 +297,8 @@ export default function PgThemes(props) {
         <div id="Tab3ContentHolder" className="transition-all duration-300 bg-white p-4 rounded-lg shadow-md border-l-4 border-indigo-500">
           <h2 className="text-2xl font-semibold mb-2 text-indigo-500" aria-label="Ru Paul's Drag Race">Ru Paul's Drag Race</h2>
           <div className="flex gap-2 flex-wrap wrap ">
+          {!props.authData.isAuthenticated && <p className='themetext'>Please login to view the tiles of this theme.</p>}
+            {isRpLoading && <p className='themetext'>Loading data from server...</p>}
             
               {Rp.length > 0 &&
                 Rp.map((phrase, index) => (
@@ -337,6 +328,8 @@ export default function PgThemes(props) {
         <div id="Tab4ContentHolder" className="transition-all duration-300 bg-white p-4 rounded-lg shadow-md border-l-4 border-indigo-500">
           <h2 className="text-2xl font-semibold mb-2 text-indigo-500" aria-label="Basic Words 1">Seattle</h2>
           <div className="flex gap-2 flex-wrap wrap " >
+          {!props.authData.isAuthenticated && <p className='themetext'>Please login to view the tiles of this theme.</p>}
+            {isSeattleLoading && <p className='themetext'>Loading data from server...</p>}
             
               {Seattle.length > 0 &&
                 Seattle.map((phrase, index) => (
@@ -367,6 +360,8 @@ export default function PgThemes(props) {
         <div id="Tab5ContentHolder" className="transition-all duration-300 bg-white p-4 rounded-lg shadow-md border-l-4 border-indigo-500">
           <h2 className="text-2xl font-semibold mb-2 text-indigo-500" aria-label="Basic Words 1">LGBT</h2>
           <div className="flex gap-2 flex-wrap wrap " >
+          {!props.authData.isAuthenticated && <p className='themetext'>Please login to view the tiles of this theme.</p>}
+            {islgbtLoading && <p className='themetext'>Loading data from server...</p>}
             
               {lgbt.length > 0 &&
                 lgbt.map((phrase, index) => (
@@ -397,6 +392,8 @@ export default function PgThemes(props) {
         <div id="Tab6ContentHolder" className="transition-all duration-300 bg-white p-4 rounded-lg shadow-md border-l-4 border-indigo-500">
           <h2 className="text-2xl font-semibold mb-2 text-indigo-500" aria-label="Basic Words 1">BB</h2>
           <div className="flex gap-2 flex-wrap wrap " >
+          {!props.authData.isAuthenticated && <p className='themetext'>Please login to view the tiles of this theme.</p>}
+            {isbbLoading && <p className='themetext'>Loading data from server...</p>}
             
               {bb.length > 0 &&
                 bb.map((phrase, index) => (

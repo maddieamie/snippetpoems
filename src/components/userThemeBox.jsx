@@ -6,9 +6,9 @@ import { Form } from 'react-bootstrap';
 
 const SERVER= import.meta.env.VITE_SERVER;
 
-export default function UserThemeBox({getToken, selectTileFunction, handleTileSelect}) {
+export default function UserThemeBox({getToken, selectTileFunction, handleTileSelect, addToast}) {
   const [openTab, setOpenTab] = useState(1);
-  const [UserTheme, setUserTheme] = useState(['newarray', 'will look like this']);
+  const [UserTheme, setUserTheme] = useState(['new generated', 'theme tiles', 'will look like this']);
   const [themerequest, setUserThemeRequest] = useState("");
   const [findThemeRequest, setFindThemeRequest] = useState('');
   const [FoundTheme, setFoundTheme] = useState(['theme here', 'theme there']);
@@ -20,12 +20,14 @@ export default function UserThemeBox({getToken, selectTileFunction, handleTileSe
   {
     console.log(themerequest);
     userMakeTheme(themerequest);
+    addToast('Calling database to make theme...');
   }
 
   const callThemeDB = () =>
   {
     console.log(findThemeRequest);
     findUserTheme(findThemeRequest);
+    addToast('Finding theme in database...');
   }
 
 const findUserTheme = (findThemeRequest) => {
@@ -54,6 +56,7 @@ const findUserTheme = (findThemeRequest) => {
       })
       .catch((error) => {
         console.log(`Error generating User Theme: ${error}`);
+        addToast('Error generating theme', 'error');
       });
   };
 
@@ -85,6 +88,7 @@ const findUserTheme = (findThemeRequest) => {
       })
       .catch((error) => {
         console.log(`Error generating User Theme: ${error}`);
+        addToast('Error generating theme, sorry!', 'error')
       });
   };
   

@@ -8,7 +8,7 @@ import MagnetBoard from './MagnetBoard';
 
 import '../styles/index.css';
 
-const AppRouter = ({ routerData, setRouterData, authData }) => {
+const AppRouter = ({ routerData, setRouterData, authData, toasts, setToasts, addToast, removeToast }) => {
 
 
   return (
@@ -19,10 +19,10 @@ const AppRouter = ({ routerData, setRouterData, authData }) => {
         <Routes>
           
           <Route path="/about" element={<About />} />
-          <Route path="/profile" element={<Profile routerData={routerData} setRouterData={setRouterData} authData={authData} />} />
+          <Route path="/profile" element={<Profile routerData={routerData} setRouterData={setRouterData} authData={authData} toasts={toasts} setToasts={setToasts} addToast={addToast} removeToast={removeToast}/>} />
           <Route
             path="/"
-            element={ <MagnetBoard routerData={routerData} setRouterData={setRouterData} authData={authData}/> }
+            element={ <MagnetBoard routerData={routerData} setRouterData={setRouterData} authData={authData} toasts={toasts} setToasts={setToasts} addToast={addToast} removeToast={removeToast}/> }
           />
           
        

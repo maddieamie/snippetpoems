@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import '../styles/index.css';
 import { useAuth0 } from "@auth0/auth0-react";
+import ToastContainer from './ToastContainer';
 
 const SERVER= import.meta.env.VITE_SERVER;
 
@@ -10,7 +11,7 @@ export default function ProfileGallery (props) {
 
     const { getIdTokenClaims } = useAuth0();
    
-    const { setRouterData, routerData } = props;
+    const { setRouterData, routerData, addToast, toasts, setToasts, removeToast } = props;
     const navigate = useNavigate();
    
     const [poems, setPoems] = useState([]);
@@ -28,11 +29,13 @@ export default function ProfileGallery (props) {
         return res.__raw;
       } catch (error) {
         console.error('Error getting token:', error);
+        addToast(`Error getting your authorization: ${error}`, 'error');
       }
     };
   
     const fetchPoems = async () => {
       console.log('fetch poems running');
+      addToast('Fetching poems from database....');
   
       try {
         const jwt = await getToken();
@@ -46,6 +49,7 @@ export default function ProfileGallery (props) {
         setPoems(response.data);
       } catch (error) {
         console.error('Error fetching poems:', error);
+        addToast(`Error fetching poems from database: ${error}`, 'error');
         setPoems([]);
       }
     };
@@ -58,6 +62,7 @@ export default function ProfileGallery (props) {
   
     const handleDelete = (id) => {
       console.log('handleDelete running');
+      addToast('Deleting poem...')
   
       getToken()
         .then(jwt => {
@@ -68,7 +73,8 @@ export default function ProfileGallery (props) {
           return axios.delete(`${SERVER}/poems/${id}`, config);
         })
         .then((response) => {
-         window.alert('Poem deleted', response.title);
+         addToast('Poem deleted!', 'success');
+
           
         })
         .then( setPoems((prevPoems) => {
@@ -77,11 +83,12 @@ export default function ProfileGallery (props) {
           }))
         .catch((error) => {
           console.error('Error deleting poem:', error);
+          addToast('Error deleting poem from database.', 'error');
         });
     };
 return(
 
-<div className="flex min-h-screen w-full flex-wrap content-center justify-center p-5 bg-gray-200">
+<div className="flex min-h-screen w-full flex-wrap content-center justify-center p-5 bg-gray-200 font-sans uppercase">
           <div className="grid grid-cols-2 gap-3">
         
             {poems.length > 0 ? (
@@ -134,6 +141,8 @@ return(
               </div>
             )}
           </div>
-        </div>)
+          <ToastContainer  toasts={toasts} setToasts={setToasts} addToast={addToast} removeToast={removeToast}/>
+        </div>
+        )
       
 }
