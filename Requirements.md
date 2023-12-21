@@ -62,4 +62,5 @@ This application in its most basic form can be used without logging in. If peopl
 
 # Data Flow Diagram 
 
+![Data flow](https://github.com/maddieamie/snippetpoems/assets/118625447/4f9a1060-4a82-483d-8541-f409b667c43d)
 
