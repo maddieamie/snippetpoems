@@ -20,6 +20,14 @@ It is a place for creative associations with a generated theme. Users could use 
 
 # Versions & Updates
 
+### Future Updates Planned
+- Fix toasts
+- Make board operable with arrow keys and enter buttons
+- Make board and tiles easier to read with screen readers
+- Allow users to see and use themes saved to their profile in the database
+- Allow customization of user poem gallery theme
+- Add loading functions
+
 ### Version 3 (current)
 *12-20-23*
 
